@@ -1,0 +1,9 @@
+name: neversaydavid
+pygments: true
+paginate: 5
+exclude:
+ - Procfile
+ - Gemfile
+ - Gemfile.lock
+ - config.ru
+ - vendor

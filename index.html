@@ -1,0 +1,25 @@
+---
+layout: default
+title: neversaydavid
+---
+
+<div id="home">
+    {% for post in paginator.posts %}
+      {% include post.html %}
+    {% endfor %}
+</div>
+
+<!-- Pagination links -->
+<div class="pagination">
+  {% if paginator.previous_page %}
+    <a href="/{% if paginator.previous_page > 1 %}page{{ paginator.previous_page }}{% endif %}" class="previous"> << </a>
+  {% else %}
+    <span class="previous"> << </span>
+  {% endif %}
+  <span class="page_number ">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span>
+  {% if paginator.next_page %}
+    <a href="/page{{ paginator.next_page }}" class="next"> >> </a>
+  {% else %}
+    <span class="next "> >> </span>
+  {% endif %}
+</div>
