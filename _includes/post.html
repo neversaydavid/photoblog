@@ -1,6 +1,6 @@
 <div class="image-box">
     {% for flickr_url in post.flickr %}
-      <a href="{{ flickr_url }}">{{ flickr_url | flickr_image }}</a>
+      <a href="{{ flickr_url }}">{{ flickr_url | flickr_responsive_image }}</a>
     {% endfor %}
 
   <div class="meta"

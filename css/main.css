@@ -125,8 +125,6 @@ img {
 
   .meta{
     width: 100%;
-    /*top: 0;*/
-    /*right: 0;*/
     position: static;
     opacity: 1;
     padding: 0.5em 0;
@@ -138,20 +136,13 @@ img {
 
   /* Archive */
 
-  /*#archive .image-box {
-    width: 50%;
-    float: left;
-    margin-bottom: 0;
-  }*/
+  #archive .image-box {
+  width: 50%;
+  }
+
 }
 
 /* Mobile */
 @media screen and (max-width: 480px) {
-
-  /* Archive */
-
-  #archive .image-box {
-  width: 50%;
-  }
 
 }
