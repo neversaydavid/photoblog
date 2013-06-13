@@ -1,6 +1,10 @@
-<div class="image-box">
+<div class="image-box {{ post.tags | join ' '}}">
     {% for flickr_url in post.flickr %}
-      <a href="{{ flickr_url }}">{{ flickr_url | flickr_responsive_image }}</a>
+      {% if detail %}
+        <a href="{{ flickr_url }}">{{ flickr_url | flickr_responsive_image }}</a>
+      {% else %}
+        <a href="{{ post.url }}">{{ flickr_url | flickr_responsive_image }}</a>
+      {% endif %}
     {% endfor %}
 
   <div class="meta"
@@ -13,11 +17,3 @@
     <p>added {{ post.date | date_to_string }}</p>
   </div>
 </div>
-
-<!-- <div class="post">
-  {% if detail %}
-      {{ content }}
-  {% else %}
-      {{ post.content }}
-  {% endif %}
-</div> -->

@@ -3,17 +3,14 @@ layout: default
 title: neversaydavid
 ---
 
-<script>
-  jQuery(window).load(function(){
-    var $container = jQuery('#archive');
-    
-    $container.isotope({
-      itemSelector: '.image-box'
-    });
-  })
-</script>
+  <ul id="filters">
+    <li><a href="#" data-filter="*">All</a></li>
+    {% sorted_for tag in site.tags %}
+      <li><a href="#" data-filter=".{{tag}}">{{tag}}</a></li>
+    {% endsorted_for %}
+  </ul>
 
-<div id="archive">
+<div id="archive"> 
   {% for post in site.posts %}
     {% include post.html %}
   {% endfor %}

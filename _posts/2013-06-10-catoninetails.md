@@ -3,7 +3,7 @@ layout: post
 title:  "Cat"
 categories: photography
 tags:
-  - animals
+  - Animals
 flickr: 
   - http://www.flickr.com/photos/neversaydavid/8764003664/
 ---
