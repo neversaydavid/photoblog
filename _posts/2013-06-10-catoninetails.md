@@ -7,5 +7,3 @@ tags:
 flickr: 
   - http://www.flickr.com/photos/neversaydavid/8764003664/
 ---
-
-Tiger!
