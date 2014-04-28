@@ -44,7 +44,7 @@ a:hover {
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 900px;
   margin: 0 auto;
   background-color: #FEE169;
   margin-top: 2.32em;
@@ -154,7 +154,7 @@ img {
 }
 
 /* Tablet */
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 924px) {
 
   /* Transition Crap */
 
