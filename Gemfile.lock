@@ -7,14 +7,6 @@ GIT
       jekyll (>= 0.12.0, < 2.0)
       rack (~> 1.5.0)
 
-GIT
-  remote: git://github.com/himynameisjonas/fleakr.git
-  revision: aaea3ef81665046b9fbb90614b129e4cec84e877
-  specs:
-    fleakr (0.7.1)
-      hpricot (>= 0.6.164)
-      loggable (>= 0.2.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -23,10 +15,11 @@ GEM
     colorator (0.1)
     commander (4.1.3)
       highline (~> 1.6.11)
+    dalli (2.7.2)
     directory_watcher (1.4.1)
     fast-stemmer (1.0.2)
+    flickraw (0.9.8)
     highline (1.6.19)
-    hpricot (0.8.6)
     jekyll (1.0.3)
       classifier (~> 1.3)
       colorator (~> 0.1)
@@ -40,7 +33,6 @@ GEM
     kgio (2.8.0)
     kramdown (1.0.2)
     liquid (2.5.0)
-    loggable (0.3.0)
     maruku (0.6.1)
       syntax (>= 1.0.0)
     posix-spawn (0.3.6)
@@ -61,7 +53,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  fleakr!
+  dalli
+  flickraw
   jekyll (~> 1.0.2)
   rack-jekyll!
   unicorn

@@ -1,54 +1,82 @@
 require 'liquid'
-require 'fleakr'
+require 'flickraw'
+require 'dalli'
 
-Fleakr.api_key = ENV['FLICKR_API_KEY']
-Fleakr.shared_secret = ENV['FLICKR_SHARED_SECRET']
-Fleakr.auth_token = ENV['FLICKR_AUTH_TOKEN']
+FlickRaw.api_key = ENV['FLICKR_API_KEY']
+FlickRaw.shared_secret = ENV['FLICKR_SHARED_SECRET']
 
-CACHED_IMAGES = {}
+CACHE_VERSION = ENV['FLICKR_CACHE_VERSION'] || "1"
+
+if ENV["MEMCACHEDCLOUD_SERVERS"]
+    CACHE = Dalli::Client.new(ENV["MEMCACHEDCLOUD_SERVERS"].split(','), :username => ENV["MEMCACHEDCLOUD_USERNAME"], :password => ENV["MEMCACHEDCLOUD_PASSWORD"])
+else
+  CACHE = Dalli::Client.new
+end
 
 module Flickr
-
   def flickr_responsive_image(url)
     image = image_object(url)
     "<figure class='flickr-image align-center' #{image[:sizes].map{|s| "data-media#{s.first}='#{s.last}'"}.join(" ")} alt='#{image[:title]}' title='#{image[:title]}'>
     <noscript>
-      <img class='flickr-image align-center' alt='#{image[:title]}' src='#{image[:sizes][1024]}'>
+      <img class='flickr-image align-center' alt='#{image[:title]}' src='#{image[:sizes]["1024"]}'>
     </noscript>
     </figure>
     "
   end
 
-  def flickr_image(url)
-    "<img alt='#{image_object(url)[:title]}' src='#{image_object(url)[:sizes][800]}'>"
+  def flickr_og_image(url)
+    image = image_object(url)
+    image[:sizes]["1600"] || image[:sizes]["1024"] || image[:sizes]["800"] || image[:sizes]["640"] || image[:sizes]["500"]
   end
 
   def flickr_medium_image(url)
-    "<img alt='#{image_object(url)[:title]}' src='#{image_object(url)[:sizes][1024]}'>"
+    image = image_object(url)
+    "<img class='flickr-image align-center' alt='#{image[:title]}' src='#{image[:sizes]["500"]}'>"
+  end
+
+  def flickr_set(url)
+    photos = set_object(url)
+    photos.map do |photo_url|
+      "<img class='flickr-image align-center' alt='' src='#{photo_url}'>"
+    end.join(" ")
   end
 
   private
 
-  def image_object(url)
-    CACHED_IMAGES[url] ||= fleakr_to_hash(url)
+  def flickr
+    @flicker ||= begin
+      flickr = FlickRaw::Flickr.new
+      flickr.access_token = ENV['FLICKR_AUTH_TOKEN']
+      flickr.access_secret = ENV['FLICKR_AUTH_SECRET']
+      flickr
+    end
   end
 
-  def fleakr_to_hash(url)
-    fleakr_image = Fleakr.resource_from_url(url)
-    image = {:sizes => {}}
+  def set_object(url)
+    CACHE.fetch(url + CACHE_VERSION) do
+      id = url.match(/photos\/\S*\/sets\/(\d+)/)[1]
+      set = flickr.photosets.getPhotos(photoset_id: id, extras: "url_q")
+      photos = set.photo.map do |photo|
+        photo.url_q
+      end
+    end
+  end
 
-    image[:sizes][nil] = fleakr_image.medium.url unless fleakr_image.medium.nil?
-    image[:sizes][fleakr_image.small_320.width.to_i] = fleakr_image.small_320.url unless fleakr_image.small_320.nil?
-    image[:sizes][fleakr_image.medium.width.to_i] = fleakr_image.medium.url unless fleakr_image.medium.nil?
-    image[:sizes][fleakr_image.medium_640.width.to_i] = fleakr_image.medium_640.url unless fleakr_image.medium_640.nil?
-    image[:sizes][fleakr_image.medium_800.width.to_i] = fleakr_image.medium_800.url unless fleakr_image.medium_800.nil?
-    image[:sizes][fleakr_image.large.width.to_i] = fleakr_image.large.url unless fleakr_image.large.nil?
-    image[:sizes][fleakr_image.large_1600.width.to_i] = fleakr_image.large_1600.url unless fleakr_image.large_1600.nil?
-    image[:sizes][fleakr_image.large_2048.width.to_i] = fleakr_image.large_2048.url unless fleakr_image.large_2048.nil?
+  def image_object(url)
+    CACHE.fetch(url + CACHE_VERSION) do
+      id = url.match(/photos\/\S*\/(\d+)/)[1]
+      sizes = flickr.photos.getSizes(photo_id: id)
+      info = flickr.photos.getInfo(photo_id: id)
 
-    image[:title] = fleakr_image.title
+      image = {sizes: {}}
 
-    image
+      sizes.each do |size|
+        image[:sizes][size.width] = size.source
+      end
+      image[:sizes][nil] = sizes.find{|s| s.label == "Medium"}.source
+      image[:title] = info.title
+      image
+    end
   end
 end
 
