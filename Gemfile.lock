@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: git://github.com/himynameisjonas/fleakr.git
-  revision: 2300eb3d915769a1ad76b0d4744c9b53acb01979
+  revision: aaea3ef81665046b9fbb90614b129e4cec84e877
   specs:
     fleakr (0.7.1)
       hpricot (>= 0.6.164)
