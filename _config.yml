@@ -1,6 +1,6 @@
 name: neversaydavid
 pygments: true
-paginate: 8
+paginate: 15
 exclude:
  - Procfile
  - Gemfile
